@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+ <mapper namespace="com.tccp.persistence.UserMapper">
+ <!-- 结果集设置 	-->
+
+  <resultMap type="testUser" id="BaseResultMap">
+    <!-- column:库表的字段名 property:实体类里的属性名 -->
+    <id column="user_id" property="user_id" />
+    <result column="username" property="username" />
+    <result column="age" property="age" />
+  </resultMap>
+
+	<!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路径 -->
+	<insert id="add" parameterType="testUser">
+		insert into user(username, age) values(#{username},#{age})
+	</insert>
+	
+	<update id="update" parameterType="testUser">
+		update user set username=#{username},age=#{age} where user_id=#{user_id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from user where user_id=#{user_id}
+	</delete>
+	  
+	<select id="findById" parameterType="int" resultType="testUser">
+		select user_id user_id,username username,age age from user where user_id=#{user_id}
+	</select>
+	
+	<select id="findAll" resultType="testUser">
+		select username username,age age from user
+	</select>
+	
+	<select id="findAll2" resultType="testUser">
+		select * from user
+	</select>
+	
+	<select id="userMap" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from user where user_id = #{user_id}
+  </select>
+ <!--  
+	<select id="findSome" parameterType="int" resultMap="BaseUserMap">
+		select * form user where user_id=#{user_id}
+	</select>-->
+</mapper>
