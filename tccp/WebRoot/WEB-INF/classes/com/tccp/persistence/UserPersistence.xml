@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+ -->
+ <mapper namespace="com.tccp.persistence.UserPersistence">
+ 
+ <!-- 结果集设置 	-->
+ <!-- 用户信息结果集 -->
+  <resultMap type="com.tccp.entity.User" id="informationMap">
+    <!-- column:库表的字段名 property:实体类里的属性名 -->
+    <id column="user_id" property="user_id" />
+    <result column="sex" property="sex" />
+    <result column="phonenum" property="phonenum" />
+    <result column="mail" property="mail" />
+    <result column="qq" property="qq" />
+    <result column="blog" property="blog" />
+    <result column="birthday" property="birthday" />
+    <result column="github" property="github" />
+    <result column="grade" property="grade" />
+    <result column="major" property="major" />
+    <result column="job" property="job" />
+    <result column="workplace" property="workplace" />
+    <result column="motto" property="motto"/>
+    <result column="image" property="image"/>
+    <result column="groups" property="groups"/>
+  </resultMap>
+  <!-- 登陆查询结果集 -->
+   <resultMap type="com.tccp.entity.User" id="loginMap">
+    <!-- column:库表的字段名 property:实体类里的属性名 -->
+    <id column="user_id" property="user_id" />
+    <result column="username" property="username" />
+    <result column="priority" property="priority" />  
+  </resultMap>
+
+<!-- **************************************************************************** -->
+	<select id="selectByUP" parameterType="com.tccp.entity.User" resultMap="loginMap">
+		select * from tccp_user where username=#{username} and password=MD5(#{password})
+	</select>
+
+	<select id="comparePd" parameterType="com.tccp.entity.User" resultType="boolean">
+		  <![CDATA[ select count(user_id) from tccp_user where user_id=#{user_id} and password=MD5(#{password}) ]]> 
+	</select>
+	
+	<select id="selectAllUsers" resultType="com.tccp.entity.User_List">
+		select * from tccp_user where priority in (0, 1)
+	</select>
+	
+	<select id="selectById" parameterType="java.lang.Integer" resultMap="informationMap">
+   	    select * from tccp_user where user_id = #{user_id}
+    </select>
+  
+  	<select id="selectPd" parameterType="java.lang.Integer" resultType="java.lang.String">
+   	    select password password from tccp_user where user_id = #{user_id}
+    </select>
+  
+  	<update id="updatePd" parameterType="com.tccp.entity.User">
+  		update tccp_user set password=#{password} where user_id=#{user_id}
+  	</update>
+  	
+  	<update id="updateImage" parameterType="com.tccp.entity.User">
+  		update tccp_user set image=#{image} where user_id=#{user_id}
+  	</update>
+  	
+  	<update id="updateUserInfo" parameterType="com.tccp.entity.User">
+  	update tccp_user set phonenum=#{phonenum},
+  	mail=#{mail},qq=#{qq},
+  	blog=#{blog},github=#{github},
+  	grade=#{grade},major=#{major},
+  	workplace=#{workplace},job=#{job},
+  	motto=#{motto},groups=#{groups} where user_id=#{user_id}
+  	</update>
+  	
+<!-- **************************************************************************** -->
+ </mapper>

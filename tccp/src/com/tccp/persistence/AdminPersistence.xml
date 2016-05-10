@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+ -->
+ <mapper namespace="com.tccp.persistence.AdminPersistence">
+ 
+ <!-- 结果集设置 	-->
+ <!-- 用户信息结果集 -->
+  <resultMap type="com.tccp.entity.User" id="informationMap">
+    <!-- column:库表的字段名 property:实体类里的属性名 -->
+    <id column="user_id" property="user_id" />
+    <result column="sex" property="sex" />
+    <result column="phonenum" property="phonenum" />
+    <result column="mail" property="mail" />
+    <result column="qq" property="qq" />
+    <result column="blog" property="blog" />
+    <result column="birthday" property="birthday" />
+    <result column="github" property="github" />
+    <result column="grade" property="grade" />
+    <result column="major" property="major" />
+    <result column="job" property="job" />
+    <result column="workplace" property="workplace" />
+    <result column="motto" property="motto"/>
+  </resultMap>
+<!-- **************************************************************************** -->
+	<insert id="addUser" parameterType="com.tccp.entity.User">
+		insert into tccp_user(username,groups,sex,phonenum,password,priority) values(#{username},#{groups},#{sex},#{phonenum},MD5("123456"),0);
+	</insert>
+	
+	<update id="moveUserToAdmin" parameterType="int">
+		update tccp_user set priority=1 where user_id = #{user_id} 
+	</update>
+	
+	<insert id="addAdmin" parameterType="java.lang.String">
+		insert into tccp_user(username,priority) values(#{username},1) 
+	</insert>
+
+	<delete id="deleteUserById" parameterType="int">
+		delete from tccp_user where user_id=#{user_id}
+	</delete>
+	
+	<delete id="deleteUserByName" parameterType="java.lang.String">
+		delete from tccp_user where username=#{username}
+	</delete>
+	
+	<select id="selectAllUser" resultType="com.tccp.entity.User">
+		select * from tccp_user 
+	</select>
+	
+	<select id="selectUser" parameterType="java.lang.Integer" resultMap="informationMap">
+   		 select * from tccp_user where user_id = #{user_id}
+ 	 </select>
+  
+  <update id="updateUser" parameterType="com.tccp.entity.User">
+  	update tccp_user set sex=#{sex},phonenum=#{phonenum},
+  	mail=#{mail},qq=#{qq},
+  	blog=#{blog},github=#{github},
+  	grade=#{grade},major=#{major},
+  	workplace=#{workplace},job=#{job},
+  	birthday=#{birthday},priority=#{priority},
+  	motto=#{motto} where user_id=#{user_id}
+  </update>
+<!-- **************************************************************************** -->
+ </mapper>

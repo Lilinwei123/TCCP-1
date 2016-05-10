@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+ -->
+ <mapper namespace="com.tccp.persistence.ActionPersistence">
+ 
+ <!-- 结果集设置 	-->
+ 
+<!-- **************************************************************************** -->
+	<insert id="addMood" parameterType="com.tccp.entity.Action">
+		insert into tccp_action(user_id,action_type,action_message,action_describe,action_date)
+		 values(#{user_id},0,#{action_message},0,#{action_date})
+	</insert>
+
+	<insert id="addComment" parameterType="com.tccp.entity.Action">
+		insert into tccp_action(user_id,action_type,action_message,action_describe,action_date)
+		 values(#{user_id},1,#{action_message},#{action_describe},#{action_date})
+	</insert>
+
+	<delete id="deleteMoodById" parameterType="int">
+		delete from tccp_action where action_id=#{action_id}
+	</delete>
+	
+	<delete id="deleteCommentsByActionId">
+		delete from tccp_action where action_type=1 and action_describe in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+	
+	<delete id="deleteActionsById" parameterType="int">
+		delete from tccp_action where user_id=#{user_id} 
+	</delete>
+
+	<select id="selectAllActions" resultType="com.tccp.entity.User_Action">
+		select a.*,u.username,u.user_id,u.image from tccp_action a, tccp_user u 
+		where a.user_id=u.user_id
+		limit 100
+	</select>
+	
+	<select id="selectAllCommentsByActionId" parameterType="int" resultType="com.tccp.entity.User_Action">
+		select a.*,u.username,u.user_id,u.image from tccp_action a, tccp_user u 
+		where a.user_id=u.user_id and a.action_describe=#{action_id} and action_type=1
+	</select>
+
+	<select id="selectAllActionsByUserId" parameterType="int" resultType="com.tccp.entity.User_Action">
+		select a.*,u.username,u.user_id,u.image 
+		from tccp_action a, tccp_user u 
+		where a.user_id=#{user_id} and action_type=0 and a.user_id=u.user_id 
+	</select>
+	
+	<select id="selectAllActionsIdByUserId" parameterType="int" resultType="int">
+		select action_id from tccp_action where action_type=0 and user_id=#{user_id} 
+	</select>
+  <!--  
+  <update id="updateUser" parameterType="com.tccp.entity.User">
+  	update tccp_user set sex=#{sex},phonenum=#{phonenum},
+  	mail=#{mail},qq=#{qq},
+  	blog=#{blog},github=#{github},
+  	grade=#{grade},major=#{major},
+  	workplace=#{workplace},job=#{job},
+  	birthday=#{birthday},priority=#{priority},
+  	motto=#{motto} where user_id=#{user_id}
+  </update> -->
+<!-- **************************************************************************** -->
+ </mapper>
